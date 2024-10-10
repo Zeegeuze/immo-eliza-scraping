@@ -16,3 +16,6 @@ immo_df = create_df()
 df = get_df(immo_df, all_links.head(5))
 
 print(df)
+
+# Save to csv
+save_to_csv(df)

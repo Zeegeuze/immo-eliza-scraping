@@ -140,7 +140,8 @@ def add_features(data_list, url):
     return feature_dict
 
 
-
+def save_to_csv(df):
+    df.to_csv("data/immo.csv", index=False)
 
 
 
