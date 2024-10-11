@@ -43,14 +43,14 @@ def create_df():
 
     return pd.DataFrame(columns=columns)
 
-def get_df(df, urls):
+def get_df(immo_df, urls):
     '''
     Will loop through all the links in the dataframe and get the info per accommodation. It will return the df.
     '''
-    immo_df = df
 
     # loop through the rows using iterrows()
     for index, row in urls.iterrows():
+        print(row)
         scraped_dict = get_scraped_dict(row['houses & appartments'])
 
         row_data = add_features(scraped_dict, row['houses & appartments'])
@@ -63,6 +63,7 @@ def get_df(df, urls):
 def  get_scraped_dict(url):
     '''
     Will get all info from a given url and return a dictionally with all this info. Return is all info stated in a list on the page on index 0 and the Immmowebcode on index 1.
+    Please note: the url should be the Dutch version (I forgot to keep that in mind)
     '''
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
@@ -89,21 +90,16 @@ def  get_scraped_dict(url):
     for i in range(0, len(tds_list)):
         feature_dict[ths_list[i]] = tds_list[i]
 
-    # get alternative info which is elsewhere on the page
-    property_ID = soup.find("div", class_="classified__header--immoweb-code")
-
-    return [feature_dict, int(property_ID.text.split(": ")[1].strip())]
+    return feature_dict
 
 
-def add_features(data_list, url):
-    data = data_list[0]
-
+def add_features(data, url):
     if 'Aantal lijfrentetrekkers' in data:
         return None
 
     feature_dict = {}
 
-    feature_dict["property_ID"] = data_list[1]
+    feature_dict["property_ID"] = property_id(url)
 
     feature_dict["locality_name"] = locality_name(data)
 
@@ -140,7 +136,8 @@ def add_features(data_list, url):
     return feature_dict
 
 
-
+def save_to_csv(df):
+    df.to_csv("data/immo.csv", index=False)
 
 
 
@@ -155,29 +152,17 @@ def accept_cookie(self):
 
     # #options.add_argument("--headless")
     # #options.add_argument("--window-size=1980,1020")
-    print('stap 0')
     browser = webdriver.Chrome()
-    print('stap 1')
-    # #--| Parse or automation
+
     # url = "https://www.immoweb.be/en/search/house/for-sale?countries=BE&page=1&orderBy=relevance"
-    # print("stap 2")
     # browser.get(url)
-    # print("stap 3")
-    # # time.sleep(3)
     # # # Use BeautifulSoup
     # # soup = BeautifulSoup(browser.page_source, 'lxml')
     # # title = soup.find('h1', class_="page-title list-title ng-binding")
-    # # print(title.text)
-    # # print('-' * 40)
+
     # # # Use Selenium
     # # info = browser.find_elements_by_xpath("//div[@class='dir-property-list']//div[1]//div[1]//div[1]")
     # # print(info[0].text)
-
-    # import webdriver_manager
-    # from selenium.webdriver.chrome.service import Service
-    # from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-    # from selenium.webdriver.chrome.options import Options
-    # from webdriver_manager.chrome import ChromeDriverManager
 
     # service = Service(ChromeDriverManager().install())
     # options = Options()
@@ -194,7 +179,6 @@ def accept_cookie(self):
     # Instantiate an instance of Remote WebDriver with the desired capabilities.
     # driver = webdriver.Remote(desired_capabilities=capabilities,
                             # command_executor=selenium_grid_url)
-    print('passed')
 
 
 
