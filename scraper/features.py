@@ -40,6 +40,9 @@ def type_of_property(url):
 def subtype_of_property(url):
     return url.split("zoekertje/")[1].split("/")[0]
 
+def property_id(url):
+    return url.split("/")[-1]
+
 def type_of_sale(data):
     key = "Plaats van de verkoop"
     if key not in data:

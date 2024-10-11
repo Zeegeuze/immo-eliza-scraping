@@ -1,40 +1,18 @@
-from scraper.scraping import *
-from scraper.optimiser import *
-import multiprocessing
 import time
+import multiprocessing
+from scraper.scraping import *
 
-# As I can't easily get Selenium working on my separate Linux division, I'll skip this for now and will grab the data collected by a colleague
+arg1 = globals().get('arg1', None)
+arg2 = globals().get('arg2', None)
 
-# accept_cookie()
-# test = get_urls_from_page(1, 'huis')
-# print(test)
+all_links = arg1
 
-start = time.perf_counter()
-
-# Get all links
-all_links = get_all_links()
-
-# Create an empty dataframe
 immo_df = create_df()
 
-# # Get all info
-# # Normal speed: 45 sec for 100 entries -> 1h15 for all
-# df = get_df(immo_df, all_links[:100])
-
-
-# Optimising speed
-import sys
-# Tried to have all the optimiser on a separate page, manage to get them there, but got troubles with the empty df
-# sys.argv = ["scraper/optimiser.py", all_links, immo_df]
-# exec('scraper/optimiser.py')
-
-# exec(open('scraper/optimiser.py').read(), {"arg1": all_links})
-# exec(open('scraper/optimiser.py').read())
-
-# Put all separator below
 df_1 = immo_df[:]
 
 def part_1(df, urls):
+    print("In part 1")
     global df_1
     df_1 = get_df(df, urls)
 
@@ -220,6 +198,3 @@ immo_df = immo_df._append(df_19, ignore_index=True)
 immo_df = immo_df._append(df_20, ignore_index=True)
 
 print("done")
-
-# Save to csv
-save_to_csv(immo_df)
