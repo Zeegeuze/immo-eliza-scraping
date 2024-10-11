@@ -50,6 +50,7 @@ def get_df(immo_df, urls):
 
     # loop through the rows using iterrows()
     for index, row in urls.iterrows():
+        print(row)
         scraped_dict = get_scraped_dict(row['houses & appartments'])
 
         row_data = add_features(scraped_dict, row['houses & appartments'])
